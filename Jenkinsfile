@@ -52,7 +52,7 @@ spec:
     stage('Build and push image with Container Builder') {
       steps {
         container('gcloud') {
-          sh "PYTHONUNBUFFERED=1 gcloud projects list"
+          sh "PYTHONUNBUFFERED=1 cat /var/secrets/google/key.json"
         }
       }
     }
