@@ -19,8 +19,8 @@ spec:
   serviceAccountName: cd-jenkins
   volumes:
   - name: google-cloud-key
-        secret:
-          secretName: pubsub-key
+    secret:
+      secretName: pubsub-key
   containers:
   - name: gcloud
     image: gcr.io/cloud-builders/gcloud
