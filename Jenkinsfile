@@ -23,7 +23,7 @@ spec:
       secretName: pubsub-key
   containers:
   - name: gcloud
-    image: gcr.io/cloud-builders/gcloud
+    image: google/cloud-sdk:284.0.0-debian_component_based
     volumeMounts:
     - name: google-cloud-key
       mountPath: /var/secrets/google
@@ -34,7 +34,7 @@ spec:
     - cat
     tty: true
   - name: kubectl
-    image: gcr.io/cloud-builders/kubectl
+    image: bitnami/kubectl:1.15.3
     volumeMounts:
     - name: google-cloud-key
       mountPath: /var/secrets/google
