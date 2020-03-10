@@ -20,7 +20,7 @@ spec:
   volumes:
   - name: google-cloud-key
     secret:
-      secretName: pubsub-key
+      secretName: jenkins-sa-key
   containers:
   - name: gcloud
     image: google/cloud-sdk:284.0.0-debian_component_based
