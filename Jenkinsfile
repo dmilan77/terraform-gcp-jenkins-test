@@ -1,29 +1,49 @@
-podTemplate(containers: [
-    containerTemplate(name: 'terraform', image: 'hashicorp/terraform:0.12.23', ttyEnabled: true, command: 'cat'),
-    containerTemplate(name: 'gcloud', image: 'google/cloud-sdk:284.0.0-debian_component_based', ttyEnabled: true, command: 'cat')
-  ]) {
+def project = 'REPLACE_WITH_YOUR_PROJECT_ID'
+def  appName = 'gceme'
+def  feSvcName = "${appName}-frontend"
+def  imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
 
-    node(POD_LABEL) {
-        stage('Test gcloud ') {
-            // git 'https://github.com/jenkinsci/kubernetes-plugin.git'
-            container('gcloud') {
-                stage('list gcloud project') {
-                    sh 'gcloud projects list'
-                }
-            }
+pipeline {
+  agent {
+    kubernetes {
+      label 'sample-app'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  # Use service account that can deploy to all namespaces
+  serviceAccountName: cd-jenkins
+  containers:
+  - name: golang
+    image: golang:1.10
+    command:
+    - cat
+    tty: true
+  - name: gcloud
+    image: gcr.io/cloud-builders/gcloud
+    command:
+    - cat
+    tty: true
+  - name: kubectl
+    image: gcr.io/cloud-builders/kubectl
+    command:
+    - cat
+    tty: true
+"""
+}
+  }
+  stages {
+    
+    stage('Build and push image with Container Builder') {
+      steps {
+        container('gcloud') {
+          sh "PYTHONUNBUFFERED=1 gcloud projects list"
         }
-
-       stage('Test Terraform version ') {
-            git url: 'https://github.com/dmilan77/terraform-gcp-jenkins-test.git'
-            container('terraform') {
-                stage('terraform stage 1 version') {
-                    sh """
-                    terraform version
-                    terraform init
-                    """
-                }
-            }
-        }
-
+      }
     }
+  }
 }
