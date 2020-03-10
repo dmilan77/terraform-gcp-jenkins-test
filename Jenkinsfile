@@ -18,29 +18,29 @@ spec:
   # Use service account that can deploy to all namespaces
   serviceAccountName: cd-jenkins
   volumes:
-      - name: google-cloud-key
+  - name: google-cloud-key
         secret:
           secretName: pubsub-key
   containers:
   - name: gcloud
     image: gcr.io/cloud-builders/gcloud
     volumeMounts:
-        - name: google-cloud-key
-          mountPath: /var/secrets/google
-        env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/google/key.json
+    - name: google-cloud-key
+      mountPath: /var/secrets/google
+      env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /var/secrets/google/key.json
     command:
     - cat
     tty: true
   - name: kubectl
     image: gcr.io/cloud-builders/kubectl
     volumeMounts:
-        - name: google-cloud-key
-          mountPath: /var/secrets/google
-        env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/google/key.json
+    - name: google-cloud-key
+      mountPath: /var/secrets/google
+      env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /var/secrets/google/key.json
     command:
     - cat
     tty: true
